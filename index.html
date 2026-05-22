@@ -948,9 +948,42 @@ cirujano: document.getElementById("cirujano").value
 await addDoc(collection(db,"cirugias"),datos);
 
 alert("Guardado online");
-
+agregarFila(datos);
 };
+function agregarFila(d){
 
+const fila = `
+
+<tr>
+
+<td>${d.turno}</td>
+<td>${d.hora}</td>
+<td>${d.quirofano}</td>
+<td>${d.paciente}</td>
+<td>${d.diagnostico}</td>
+<td>${d.procedimiento}</td>
+<td>${d.cirujano}</td>
+<td>${d.anestesio}</td>
+<td>${d.servicio}</td>
+<td>${d.modalidad}</td>
+<td>${d.piso}</td>
+<td>${d.obs}</td>
+
+</tr>
+
+`;
+
+if(d.turno==="Mañana"){
+
+document.getElementById("tablaManana").innerHTML += fila;
+
+}else{
+
+document.getElementById("tablaTarde").innerHTML += fila;
+
+}
+
+}
 </script>
 </body>
 </html>
