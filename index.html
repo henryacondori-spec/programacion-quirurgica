@@ -719,7 +719,18 @@ document.getElementById("obs").value="";
 
 }
 
-async function descargarPDF(){
+function descargarPDF(){
+
+if(
+document.getElementById("tablaManana").rows.length===0 &&
+document.getElementById("tablaTarde").rows.length===0
+){
+
+alert("No hay cirugías para descargar");
+
+return;
+
+}
 
 let fecha=document.getElementById("fechaAgenda").value;
 
@@ -871,53 +882,59 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 window.agregar = async function(){
 
-const fecha=document.getElementById("fechaAgenda").value;
+  // VALIDAR CAMPOS OBLIGATORIOS
+  const fecha = document.getElementById("fechaAgenda").value;
+  const turno = document.getElementById("turno").value;
+  const hora = document.getElementById("hora").value;
+  const quirofano = document.getElementById("quirofano").value;
+  const paciente = document.getElementById("paciente").value;
+  const diagnostico = document.getElementById("diagnostico").value;
+  const procedimiento = document.getElementById("procedimiento").value;
+  const cirujano = document.getElementById("cirujano").value;
+  const anestesio = document.getElementById("anestesio").value;
+  const servicio = document.getElementById("servicio").value;
+  const modalidad = document.getElementById("modalidad").value;
+  const piso = document.getElementById("piso").value;
+  
+  // ARRAY DE CAMPOS OBLIGATORIOS
+  const camposObligatorios = [
+    {valor: fecha, nombre:"Fecha"},
+    {valor: turno, nombre:"Turno"},
+    {valor: hora, nombre:"Hora"},
+    {valor: quirofano, nombre:"Quirófano"},
+    {valor: paciente, nombre:"Paciente"},
+    {valor: diagnostico, nombre:"Diagnóstico"},
+    {valor: procedimiento, nombre:"Procedimiento"},
+    {valor: cirujano, nombre:"Cirujano"},
+    {valor: anestesio, nombre:"Anestesiólogo"},
+    {valor: servicio, nombre:"Servicio"},
+    {valor: modalidad, nombre:"Modalidad"},
+    {valor: piso, nombre:"Piso"}
+  ];
 
-if(!fecha){
-alert("Debe seleccionar una fecha");
-return;
-}
+  for(const campo of camposObligatorios){
+    if(campo.valor.trim() === ""){
+      alert("Por favor complete: " + campo.nombre);
+      return; // Detiene la función si falta un campo
+    }
+  }
 
-const obligatorios=[
-"turno","hora","quirofano","paciente","diagnostico",
-"procedimiento","cirujano","anestesio",
-"servicio","modalidad","piso"
-];
-
-for(const id of obligatorios){
-
-const campo=document.getElementById(id);
-
-if(!campo || campo.value.trim()===""){
-alert("Complete todos los campos obligatorios");
-return;
-}
-
-}
-
-
+  // Si pasó la validación, crea el objeto datos
   const datos = {
-  fecha: document.getElementById("fechaAgenda").value,
-    turno: document.getElementById("turno").value,
-    hora: document.getElementById("hora").value,
-    quirofano: document.getElementById("quirofano").value,
-    paciente: document.getElementById("paciente").value,
-    diagnostico: document.getElementById("diagnostico").value,
-    procedimiento: document.getElementById("procedimiento").value,
-    cirujano: document.getElementById("cirujano").value,
-    anestesio: document.getElementById("anestesio").value,
-    servicio: document.getElementById("servicio").value,
-    modalidad: document.getElementById("modalidad").value,
-    piso: document.getElementById("piso").value,
-    obs: document.getElementById("obs").value
+    fecha,
+    turno,
+    hora,
+    quirofano,
+    paciente,
+    diagnostico,
+    procedimiento,
+    cirujano,
+    anestesio,
+    servicio,
+    modalidad,
+    piso,
+    obs: document.getElementById("obs").value || ""
   };
-
-  await addDoc(collection(db,"cirugias"), datos);
-
-  agregarFila(datos);
-
-  alert("Guardado online");
-};
 
 function agregarFila(d){
 
@@ -954,12 +971,6 @@ document.getElementById("tablaTarde").innerHTML += fila;
 
 }
 window.cargarFecha = async function(){
-
-const manana=document.getElementById("tablaManana");
-const tarde=document.getElementById("tablaTarde");
-
-manana.innerHTML="";
-tarde.innerHTML="";
 
 const manana = document.getElementById("tablaManana");
 
