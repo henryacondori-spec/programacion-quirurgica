@@ -871,6 +871,31 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 window.agregar = async function(){
 
+const fecha=document.getElementById("fechaAgenda").value;
+
+if(!fecha){
+alert("Debe seleccionar una fecha");
+return;
+}
+
+const obligatorios=[
+"turno","hora","quirofano","paciente","diagnostico",
+"procedimiento","cirujano","anestesio",
+"servicio","modalidad","piso"
+];
+
+for(const id of obligatorios){
+
+const campo=document.getElementById(id);
+
+if(!campo || campo.value.trim()===""){
+alert("Complete todos los campos obligatorios");
+return;
+}
+
+}
+
+
   const datos = {
   fecha: document.getElementById("fechaAgenda").value,
     turno: document.getElementById("turno").value,
@@ -929,6 +954,12 @@ document.getElementById("tablaTarde").innerHTML += fila;
 
 }
 window.cargarFecha = async function(){
+
+const manana=document.getElementById("tablaManana");
+const tarde=document.getElementById("tablaTarde");
+
+manana.innerHTML="";
+tarde.innerHTML="";
 
 const manana = document.getElementById("tablaManana");
 
