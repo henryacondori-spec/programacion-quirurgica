@@ -846,10 +846,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import {
 getFirestore,
 collection,
-addDoc
+addDoc,
+getDocs,
+query,
+where
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 
 
 const firebaseConfig = {
@@ -870,6 +872,7 @@ const db = getFirestore(app);
 window.agregar = async function(){
 
   const datos = {
+  fecha: document.getElementById("fechaAgenda").value,
     turno: document.getElementById("turno").value,
     hora: document.getElementById("hora").value,
     quirofano: document.getElementById("quirofano").value,
@@ -925,7 +928,35 @@ document.getElementById("tablaTarde").innerHTML += fila;
 }
 
 }
+window.cargarFecha = async function(){
 
+const manana = document.getElementById("tablaManana");
+
+const tarde = document.getElementById("tablaTarde");
+
+manana.innerHTML = "";
+
+tarde.innerHTML = "";
+
+const fechaSeleccionada =
+document.getElementById("fechaAgenda").value;
+
+const q = query(
+collection(db,"cirugias"),
+where("fecha","==",fechaSeleccionada)
+);
+
+const querySnapshot = await getDocs(q);
+
+querySnapshot.forEach((docu)=>{
+
+const d = docu.data();
+
+agregarFila(d);
+
+});
+
+}
 </script>
 </body>
 </html>
