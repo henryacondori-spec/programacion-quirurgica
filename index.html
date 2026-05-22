@@ -487,7 +487,7 @@ TURNO TARDE
 <tbody id="tablaTarde"></tbody>
 </table>
 
-<button type="button" class="add" onclick="agregar()">Agregar</button>
+<button type="button" class="add" onclick="window.agregar()">Agregar</button>
 <button type="button" class="del" onclick="eliminarUltimo()">Eliminar Seleccionado</button>
 <button type="button" class="pdf" onclick="descargarPDF()">Descargar PDF</button>
 <button type="button" class="pdf" onclick="descargarImagen()">Descargar Imagen</button>
@@ -589,71 +589,11 @@ FIRMA Y SELLO
 
 let filaSeleccionada=null;
 
-function agregar(){
-
-let fecha=document.getElementById("fechaAgenda").value;
-
-if(!fecha){
-
-alert("Seleccione una fecha");
-
-return;
-
-}
-
-let agenda=JSON.parse(
-localStorage.getItem("agendaQuirurgica")
-) || {};
-
-if(!agenda[fecha]){
-
-agenda[fecha]={
-
-"Mañana":[],
-"Tarde":[]
-
-};
-
-}
-
-let datos={
-
-hora:document.getElementById('hora').value + '°',
-quirofano:document.getElementById('quirofano').value,
-paciente:document.getElementById('paciente').value,
-diagnostico:document.getElementById('diagnostico').value,
-procedimiento:document.getElementById('procedimiento').value,
-cirujano:document.getElementById('cirujano').value,
-anestesio:document.getElementById('anestesio').value,
-servicio:document.getElementById('servicio').value,
-modalidad:document.getElementById('modalidad').value,
-piso:document.getElementById('piso').value,
-obs:document.getElementById('obs').value
-
-};
-
-let turno=document.getElementById("turno").value;
-
-agenda[fecha][turno].push(datos);
-
-localStorage.setItem(
-"agendaQuirurgica",
-JSON.stringify(agenda)
-);
-
-cargarFecha();
-
-limpiarCampos();
-
-}
-
 function cargarFecha(){
 
 let fecha=document.getElementById("fechaAgenda").value;
 
 let agenda=JSON.parse(
-localStorage.getItem("agendaQuirurgica")
-) || {};
 
 let manana=document.getElementById("tablaManana");
 
@@ -756,16 +696,11 @@ return;
 let fecha=document.getElementById("fechaAgenda").value;
 
 let agenda=JSON.parse(
-localStorage.getItem("agendaQuirurgica")
-) || {};
+
 
 agenda[fecha][filaSeleccionada.turno]
 .splice(filaSeleccionada.index,1);
 
-localStorage.setItem(
-"agendaQuirurgica",
-JSON.stringify(agenda)
-);
 
 filaSeleccionada=null;
 
@@ -932,42 +867,48 @@ appId: "1:751972820411:web:cd501cd2a0bc8f14ebd09e"
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
-
-
-
 window.agregar = async function(){
 
-const datos = {
+  const datos = {
+    turno: document.getElementById("turno").value,
+    hora: document.getElementById("hora").value,
+    quirofano: document.getElementById("quirofano").value,
+    paciente: document.getElementById("paciente").value,
+    diagnostico: document.getElementById("diagnostico").value,
+    procedimiento: document.getElementById("procedimiento").value,
+    cirujano: document.getElementById("cirujano").value,
+    anestesio: document.getElementById("anestesio").value,
+    servicio: document.getElementById("servicio").value,
+    modalidad: document.getElementById("modalidad").value,
+    piso: document.getElementById("piso").value,
+    obs: document.getElementById("obs").value
+  };
 
-paciente: document.getElementById("paciente").value,
-procedimiento: document.getElementById("procedimiento").value,
-cirujano: document.getElementById("cirujano").value
+  await addDoc(collection(db,"cirugias"), datos);
 
+  agregarFila(datos);
+
+  alert("Guardado online");
 };
 
-await addDoc(collection(db,"cirugias"),datos);
-
-alert("Guardado online");
-agregarFila(datos);
-};
 function agregarFila(d){
 
 const fila = `
 
 <tr>
 
-<td>${d.turno || ""}</td>
-<td>${d.hora || ""}</td>
-<td>${d.quirofano || ""}</td>
-<td>${d.paciente || ""}</td>
-<td>${d.diagnostico || ""}</td>
-<td>${d.procedimiento || ""}</td>
-<td>${d.cirujano || ""}</td>
-<td>${d.anestesio || ""}</td>
-<td>${d.servicio || ""}</td>
-<td>${d.modalidad || ""}</td>
-<td>${d.piso || ""}</td>
-<td>${d.obs || ""}</td>
+<td>${d.turno}</td>
+<td>${d.hora}</td>
+<td>${d.quirofano}</td>
+<td>${d.paciente}</td>
+<td>${d.diagnostico}</td>
+<td>${d.procedimiento}</td>
+<td>${d.cirujano}</td>
+<td>${d.anestesio}</td>
+<td>${d.servicio}</td>
+<td>${d.modalidad}</td>
+<td>${d.piso}</td>
+<td>${d.obs}</td>
 
 </tr>
 
@@ -984,6 +925,7 @@ document.getElementById("tablaTarde").innerHTML += fila;
 }
 
 }
+
 </script>
 </body>
 </html>
