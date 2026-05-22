@@ -904,6 +904,53 @@ cargarFecha();
 
 }
 </script>
+<script type="module">
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyClbUsPvZi6n_ann5tgGsWpJsHJ9RF9Vb8",
+authDomain: "programacion-quirurgica-6a858.firebaseapp.com",
+projectId: "programacion-quirurgica-6a858",
+storageBucket: "programacion-quirurgica-6a858.firebasestorage.app",
+messagingSenderId: "751972820411",
+appId: "1:751972820411:web:cd501cd2a0bc8f14ebd09e"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+
+window.agregar = async function(){
+
+const datos = {
+
+paciente: document.getElementById("paciente").value,
+procedimiento: document.getElementById("procedimiento").value,
+cirujano: document.getElementById("cirujano").value
+
+};
+
+await addDoc(collection(db,"cirugias"),datos);
+
+alert("Guardado online");
+
+};
+
+</script>
 </body>
 </html>
